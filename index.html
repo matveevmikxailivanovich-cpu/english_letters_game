@@ -5,30 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Учим английские буквы!</title>
+    <title>🎮 Учим английские буквы - СУПЕР игра!</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
-        }
-
-        /* Запрет на чтение контента в iOS */
-        body, body * {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-        }
-        
-        /* Специально для iOS Safari */
-        @supports (-webkit-touch-callout: none) {
-            * {
-                speak: never;
-                -webkit-user-select: none !important;
-            }
         }
 
         body {
@@ -39,115 +23,273 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .game-container {
             background: white;
             border-radius: 30px;
-            padding: 40px;
+            padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             text-align: center;
+            position: relative;
         }
 
         h1 {
             color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: titleBounce 2s infinite;
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         .subtitle {
             color: #666;
-            font-size: 1.2em;
-            margin-bottom: 30px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .level-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .level-btn.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            box-shadow: 0 6px 20px rgba(76,175,80,0.4);
         }
 
         .score-board {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 30px;
-            font-size: 1.3em;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
         }
 
         .score-item {
-            background: #f0f0f0;
-            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
             border-radius: 15px;
             font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .score-item span {
-            color: #667eea;
             font-size: 1.5em;
+            display: block;
+        }
+
+        .stars-display {
+            font-size: 2em;
+            margin: 15px 0;
+            min-height: 50px;
+        }
+
+        .star {
+            display: inline-block;
+            animation: starPop 0.5s ease-out;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.3) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
         }
 
         .letter-display {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 25px;
-            margin: 30px 0;
+            margin: 20px 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 250px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .letter-display:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .letter-display:active {
+            transform: scale(0.98);
+        }
+
         #letter-canvas {
             cursor: pointer;
         }
 
         .pronunciation {
-            background: #f0f0f0;
-            color: #667eea;
-            font-size: 1.8em;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #d35400;
+            font-size: 1.6em;
             font-weight: bold;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
-            margin: 20px 0;
-            border: 3px dashed #667eea;
+            margin: 15px 0;
+            border: 3px solid #e67e22;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .pronunciation-label {
-            font-size: 0.7em;
-            color: #999;
+            font-size: 0.6em;
+            color: #c0392b;
             margin-bottom: 5px;
         }
 
-        .letter-display:hover {
-            transform: scale(1.05);
+        .image-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 3px solid #f093fb;
+            animation: cardAppear 0.5s ease-out;
         }
 
-        .letter-display:active {
-            transform: scale(0.95);
+        @keyframes cardAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
+
+        .letter-art-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .letter-art {
+            font-size: 8em;
+            font-weight: bold;
+            position: relative;
+            animation: letterBounce 2s ease-in-out infinite;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        @keyframes letterBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .image-emoji {
+            font-size: 5em;
+            margin: 10px 0;
+            animation: emojiFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes emojiFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .image-word {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #8e44ad;
+            margin: 10px 0;
+        }
+
+        .image-translation {
+            font-size: 1.3em;
+            color: #34495e;
+            font-style: italic;
+        }
+
+        /* Специальные стили для букв-картинок */
+        .letter-art.apple { color: #e74c3c; }
+        .letter-art.bear { color: #8B4513; }
+        .letter-art.cat { color: #f39c12; }
+        .letter-art.dog { color: #95a5a6; }
+        .letter-art.elephant { color: #7f8c8d; }
+        .letter-art.frog { color: #27ae60; }
+        .letter-art.giraffe { color: #f39c12; }
+        .letter-art.house { color: #e67e22; }
+        .letter-art.ice { color: #3498db; }
+        .letter-art.juice { color: #f1c40f; }
+        .letter-art.key { color: #f39c12; }
+        .letter-art.lion { color: #f39c12; }
+        .letter-art.monkey { color: #8B4513; }
+        .letter-art.night { color: #34495e; }
+        .letter-art.octopus { color: #9b59b6; }
+        .letter-art.penguin { color: #2c3e50; }
+        .letter-art.queen { color: #e74c3c; }
+        .letter-art.rocket { color: #e74c3c; }
+        .letter-art.sun { color: #f39c12; }
+        .letter-art.tiger { color: #e67e22; }
+        .letter-art.umbrella { color: #3498db; }
+        .letter-art.violin { color: #8B4513; }
+        .letter-art.wolf { color: #7f8c8d; }
+        .letter-art.box { color: #95a5a6; }
+        .letter-art.yarn { color: #e91e63; }
+        .letter-art.zebra { color: #2c3e50; }
 
         .options-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 30px 0;
+            gap: 12px;
+            margin: 20px 0;
         }
 
         .option-btn {
-            background: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
             color: white;
             border: none;
-            padding: 25px;
-            font-size: 1.5em;
+            padding: 20px;
+            font-size: 1.4em;
             font-weight: bold;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             text-transform: uppercase;
+            position: relative;
         }
 
         .option-btn:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
@@ -156,54 +298,65 @@
         }
 
         .option-btn.correct {
-            background: #4CAF50;
-            animation: correctPulse 0.5s;
+            animation: correctAnimation 0.6s;
         }
 
         .option-btn.wrong {
-            background: #f44336;
-            animation: shake 0.5s;
+            animation: wrongAnimation 0.6s;
+            background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
         }
 
-        @keyframes correctPulse {
+        @keyframes correctAnimation {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            50% { transform: scale(1.15) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(3deg); }
         }
 
-        @keyframes shake {
+        @keyframes wrongAnimation {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            20% { transform: translateX(-15px); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
         }
 
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .control-btn {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
+            padding: 12px 25px;
+            font-size: 1.1em;
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .control-btn:hover {
-            background: #764ba2;
             transform: scale(1.05);
         }
 
         .message {
-            font-size: 1.5em;
-            margin: 20px 0;
+            font-size: 1.6em;
+            margin: 15px 0;
             min-height: 40px;
             font-weight: bold;
+            animation: messageFade 0.5s;
+        }
+
+        @keyframes messageFade {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .message.correct {
@@ -214,51 +367,132 @@
             color: #f44336;
         }
 
-        .emoji {
-            font-size: 2em;
-        }
-
         .progress-bar {
             background: #e0e0e0;
-            height: 20px;
-            border-radius: 10px;
+            height: 25px;
+            border-radius: 15px;
             overflow: hidden;
-            margin: 20px 0;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .progress-fill {
             background: linear-gradient(90deg, #4CAF50, #8BC34A);
             height: 100%;
-            transition: width 0.5s;
-            border-radius: 10px;
+            transition: width 0.5s ease-out;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(76,175,80,0.5);
+        }
+
+        .combo-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: comboPulse 1s infinite;
+        }
+
+        @keyframes comboPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .floating-emoji {
+            position: fixed;
+            font-size: 3em;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            z-index: 1000;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotate(360deg);
+            }
+        }
+
+        .timer {
+            font-size: 1.5em;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .score-board { grid-template-columns: 1fr; }
+            .options-container { gap: 10px; }
+            .option-btn { padding: 15px; font-size: 1.2em; }
         }
     </style>
 </head>
-<body aria-live="off">{
+<body aria-live="off">
     <div class="game-container">
         <h1>🎮 Учим английские буквы!</h1>
-        <p class="subtitle">Слушай букву и выбирай правильный ответ</p>
+        <p class="subtitle">Выбери уровень сложности:</p>
         
+        <div class="level-selector">
+            <button class="level-btn active" onclick="setLevel('easy')" data-level="easy">
+                😊 Лёгкий
+            </button>
+            <button class="level-btn" onclick="setLevel('medium')" data-level="medium">
+                🤔 Средний
+            </button>
+            <button class="level-btn" onclick="setLevel('hard')" data-level="hard">
+                🔥 Сложный
+            </button>
+        </div>
+
         <div class="score-board">
             <div class="score-item">
-                ⭐ Правильно: <span id="correct-count">0</span>
+                ⭐ Очки
+                <span id="correct-count">0</span>
             </div>
             <div class="score-item">
-                ❌ Ошибок: <span id="wrong-count">0</span>
+                💯 Комбо
+                <span id="combo-count">0</span>
+            </div>
+            <div class="score-item">
+                ❌ Ошибки
+                <span id="wrong-count">0</span>
             </div>
         </div>
+
+        <div class="stars-display" id="stars-display"></div>
 
         <div class="progress-bar">
             <div class="progress-fill" id="progress"></div>
         </div>
 
+        <div class="timer" id="timer" style="display: none;">⏱️ <span id="time-left">10</span> сек</div>
+
         <div class="letter-display" onclick="speakLetter()">
-            <canvas id="letter-canvas" width="400" height="250" aria-hidden="true" role="img"></canvas>
+            <canvas id="letter-canvas" width="400" height="200" aria-hidden="true" role="img"></canvas>
         </div>
 
         <div class="pronunciation">
             <div class="pronunciation-label">Произносится:</div>
             <div id="pronunciation-text">[ ? ]</div>
+        </div>
+
+        <div class="image-card" id="image-card" style="display: none;">
+            <div class="letter-art-container">
+                <div class="letter-art" id="letter-art">A</div>
+                <div class="image-emoji" id="image-emoji">🎨</div>
+            </div>
+            <div class="image-word" id="image-word">Word</div>
+            <div class="image-translation" id="image-translation">Слово</div>
         </div>
 
         <div class="message" id="message"></div>
@@ -270,6 +504,7 @@
         <div class="controls">
             <button class="control-btn" onclick="speakLetter()">🔊 Повторить</button>
             <button class="control-btn" onclick="nextQuestion()">➡️ Следующая</button>
+            <button class="control-btn" onclick="restartGame()">🔄 Заново</button>
         </div>
     </div>
 
@@ -279,63 +514,108 @@
         let correctAnswers = 0;
         let wrongAnswers = 0;
         let questionsAsked = 0;
-        const totalQuestions = 10;
-
-        // Функция для отрисовки буквы на canvas (iOS не может прочитать изображение)
-        function drawLetter(letter) {
-            const canvas = document.getElementById('letter-canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // Очищаем canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Настройки текста
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 180px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            // Рисуем букву
-            ctx.fillText(letter, canvas.width / 2, canvas.height / 2);
-        }
+        let totalQuestions = 10;
+        let currentLevel = 'easy';
+        let comboCount = 0;
+        let timer = null;
+        let timeLeft = 10;
 
         // Словарь произношения букв
         const letterPronunciation = {
-            'A': 'эй',
-            'B': 'би',
-            'C': 'си',
-            'D': 'ди',
-            'E': 'и',
-            'F': 'эф',
-            'G': 'джи',
-            'H': 'эйч',
-            'I': 'ай',
-            'J': 'джей',
-            'K': 'кей',
-            'L': 'эл',
-            'M': 'эм',
-            'N': 'эн',
-            'O': 'оу',
-            'P': 'пи',
-            'Q': 'кью',
-            'R': 'а:',
-            'S': 'эс',
-            'T': 'ти',
-            'U': 'ю',
-            'V': 'ви',
-            'W': 'дабл-ю',
-            'X': 'экс',
-            'Y': 'уай',
-            'Z': 'зед'
+            'A': 'эй', 'B': 'би', 'C': 'си', 'D': 'ди', 'E': 'и',
+            'F': 'эф', 'G': 'джи', 'H': 'эйч', 'I': 'ай', 'J': 'джей',
+            'K': 'кей', 'L': 'эл', 'M': 'эм', 'N': 'эн', 'O': 'оу',
+            'P': 'пи', 'Q': 'кью', 'R': 'а:', 'S': 'эс', 'T': 'ти',
+            'U': 'ю', 'V': 'ви', 'W': 'дабл-ю', 'X': 'экс', 'Y': 'уай', 'Z': 'зед'
         };
 
-        function updatePronunciation() {
-            const pronunciationEl = document.getElementById('pronunciation-text');
-            if (currentLetter && letterPronunciation[currentLetter]) {
-                pronunciationEl.textContent = `[ ${letterPronunciation[currentLetter]} ]`;
+        // Картинки-ассоциации для каждой буквы
+        const letterImages = {
+            'A': { emoji: '🍎', word: 'Apple', translation: 'Яблоко', class: 'apple' },
+            'B': { emoji: '🐻', word: 'Bear', translation: 'Медведь', class: 'bear' },
+            'C': { emoji: '🐱', word: 'Cat', translation: 'Кошка', class: 'cat' },
+            'D': { emoji: '🐶', word: 'Dog', translation: 'Собака', class: 'dog' },
+            'E': { emoji: '🐘', word: 'Elephant', translation: 'Слон', class: 'elephant' },
+            'F': { emoji: '🐸', word: 'Frog', translation: 'Лягушка', class: 'frog' },
+            'G': { emoji: '🦒', word: 'Giraffe', translation: 'Жираф', class: 'giraffe' },
+            'H': { emoji: '🏠', word: 'House', translation: 'Дом', class: 'house' },
+            'I': { emoji: '🍦', word: 'Ice cream', translation: 'Мороженое', class: 'ice' },
+            'J': { emoji: '🧃', word: 'Juice', translation: 'Сок', class: 'juice' },
+            'K': { emoji: '🔑', word: 'Key', translation: 'Ключ', class: 'key' },
+            'L': { emoji: '🦁', word: 'Lion', translation: 'Лев', class: 'lion' },
+            'M': { emoji: '🐵', word: 'Monkey', translation: 'Обезьяна', class: 'monkey' },
+            'N': { emoji: '🌙', word: 'Night', translation: 'Ночь', class: 'night' },
+            'O': { emoji: '🐙', word: 'Octopus', translation: 'Осьминог', class: 'octopus' },
+            'P': { emoji: '🐧', word: 'Penguin', translation: 'Пингвин', class: 'penguin' },
+            'Q': { emoji: '👸', word: 'Queen', translation: 'Королева', class: 'queen' },
+            'R': { emoji: '🚀', word: 'Rocket', translation: 'Ракета', class: 'rocket' },
+            'S': { emoji: '☀️', word: 'Sun', translation: 'Солнце', class: 'sun' },
+            'T': { emoji: '🐯', word: 'Tiger', translation: 'Тигр', class: 'tiger' },
+            'U': { emoji: '☂️', word: 'Umbrella', translation: 'Зонт', class: 'umbrella' },
+            'V': { emoji: '🎻', word: 'Violin', translation: 'Скрипка', class: 'violin' },
+            'W': { emoji: '🐺', word: 'Wolf', translation: 'Волк', class: 'wolf' },
+            'X': { emoji: '📦', word: 'Box', translation: 'Коробка', class: 'box' },
+            'Y': { emoji: '🧶', word: 'Yarn', translation: 'Нитки', class: 'yarn' },
+            'Z': { emoji: '🦓', word: 'Zebra', translation: 'Зебра', class: 'zebra' }
+        };
+
+        // Рисуем букву на canvas
+        function drawLetter(letter) {
+            const canvas = document.getElementById('letter-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 160px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(letter, canvas.width / 2, canvas.height / 2);
+        }
+
+        function setLevel(level) {
+            currentLevel = level;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.level === level) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Настройки для уровней
+            if (level === 'easy') {
+                totalQuestions = 10;
+                document.getElementById('timer').style.display = 'none';
+            } else if (level === 'medium') {
+                totalQuestions = 15;
+                document.getElementById('timer').style.display = 'block';
+                timeLeft = 15;
             } else {
-                pronunciationEl.textContent = '[ ? ]';
+                totalQuestions = 20;
+                document.getElementById('timer').style.display = 'block';
+                timeLeft = 10;
             }
+            
+            restartGame();
+        }
+
+        function startTimer() {
+            if (currentLevel === 'easy') return;
+            
+            clearInterval(timer);
+            timeLeft = currentLevel === 'medium' ? 15 : 10;
+            document.getElementById('time-left').textContent = timeLeft;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-left').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    wrongAnswers++;
+                    comboCount = 0;
+                    showMessage(false);
+                    setTimeout(() => nextQuestion(), 1500);
+                }
+            }, 1000);
         }
 
         function getRandomLetter() {
@@ -364,46 +644,99 @@
 
         function speakLetter() {
             if ('speechSynthesis' in window) {
-                // Останавливаем любую текущую озвучку
                 window.speechSynthesis.cancel();
-                
-                // Небольшая задержка для iOS Safari
                 setTimeout(() => {
                     const utterance = new SpeechSynthesisUtterance(currentLetter);
                     utterance.lang = 'en-US';
                     utterance.rate = 0.8;
                     utterance.pitch = 1.2;
                     utterance.volume = 1;
-                    
-                    // Предотвращаем повторное озвучивание
-                    utterance.onstart = function() {
-                        document.body.setAttribute('aria-busy', 'true');
-                    };
-                    utterance.onend = function() {
-                        document.body.setAttribute('aria-busy', 'false');
-                    };
-                    
                     window.speechSynthesis.speak(utterance);
                 }, 100);
             }
         }
 
+        function updatePronunciation() {
+            const pronunciationEl = document.getElementById('pronunciation-text');
+            if (currentLetter && letterPronunciation[currentLetter]) {
+                pronunciationEl.textContent = `[ ${letterPronunciation[currentLetter]} ]`;
+            } else {
+                pronunciationEl.textContent = '[ ? ]';
+            }
+        }
+
+        function showImageCard(letter) {
+            const imageCard = document.getElementById('image-card');
+            const imageData = letterImages[letter];
+            
+            if (imageData) {
+                // Показываем букву с цветом
+                const letterArt = document.getElementById('letter-art');
+                letterArt.textContent = letter;
+                letterArt.className = 'letter-art ' + imageData.class;
+                
+                // Показываем emoji и текст
+                document.getElementById('image-emoji').textContent = imageData.emoji;
+                document.getElementById('image-word').textContent = imageData.word;
+                document.getElementById('image-translation').textContent = imageData.translation;
+                imageCard.style.display = 'block';
+            }
+        }
+
+        function hideImageCard() {
+            const imageCard = document.getElementById('image-card');
+            imageCard.style.display = 'none';
+        }
+
         function updateScore() {
             document.getElementById('correct-count').textContent = correctAnswers;
             document.getElementById('wrong-count').textContent = wrongAnswers;
+            document.getElementById('combo-count').textContent = comboCount;
             
             const progress = (questionsAsked / totalQuestions) * 100;
             document.getElementById('progress').style.width = progress + '%';
         }
 
+        function showStars(count) {
+            const starsDisplay = document.getElementById('stars-display');
+            starsDisplay.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('span');
+                    star.className = 'star';
+                    star.textContent = '⭐';
+                    starsDisplay.appendChild(star);
+                }, i * 100);
+            }
+        }
+
+        function createFloatingEmoji(emoji) {
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.className = 'floating-emoji';
+            floatingEmoji.textContent = emoji;
+            floatingEmoji.style.left = Math.random() * window.innerWidth + 'px';
+            floatingEmoji.style.top = window.innerHeight / 2 + 'px';
+            document.body.appendChild(floatingEmoji);
+            
+            setTimeout(() => {
+                floatingEmoji.remove();
+            }, 2000);
+        }
+
         function showMessage(isCorrect) {
             const messageEl = document.getElementById('message');
             if (isCorrect) {
-                const messages = ['Молодец! 🎉', 'Отлично! 🌟', 'Правильно! 👍', 'Супер! 🎊', 'Умница! 💪'];
+                const messages = ['Молодец! 🎉', 'Отлично! 🌟', 'Правильно! 👍', 'Супер! 🎊', 'Умница! 💪', 'Блестяще! ✨'];
                 messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
                 messageEl.className = 'message correct';
+                
+                // Звёздочки за комбо
+                if (comboCount >= 3) {
+                    showStars(Math.min(comboCount, 5));
+                    createFloatingEmoji('🔥');
+                }
             } else {
-                const messages = ['Попробуй ещё раз! 😊', 'Почти получилось! 💪', 'Не переживай, попробуй снова! 🌈'];
+                const messages = ['Попробуй ещё! 😊', 'Почти! 💪', 'Не переживай! 🌈', 'Получится! 🎯'];
                 messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
                 messageEl.className = 'message wrong';
             }
@@ -415,37 +748,53 @@
         }
 
         function checkAnswer(selectedLetter, btnElement) {
+            clearInterval(timer);
             const allButtons = document.querySelectorAll('.option-btn');
             allButtons.forEach(btn => btn.disabled = true);
 
             if (selectedLetter === currentLetter) {
                 correctAnswers++;
+                comboCount++;
                 btnElement.classList.add('correct');
                 showMessage(true);
+                createFloatingEmoji(['🎉', '✨', '🌟', '💫'][Math.floor(Math.random() * 4)]);
+                
+                // Показываем картинку-ассоциацию
+                setTimeout(() => {
+                    showImageCard(currentLetter);
+                }, 500);
                 
                 setTimeout(() => {
+                    hideImageCard();
                     nextQuestion();
-                }, 1500);
+                }, 3000);
             } else {
                 wrongAnswers++;
+                comboCount = 0;
                 btnElement.classList.add('wrong');
                 showMessage(false);
                 
                 allButtons.forEach(btn => {
-                    if (btn.textContent === currentLetter) {
-                        btn.style.background = '#4CAF50';
+                    if (btn.textContent.includes(currentLetter)) {
+                        btn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%)';
                         btn.style.transform = 'scale(1.1)';
                     }
                 });
+
+                // Показываем правильную картинку даже при ошибке
+                setTimeout(() => {
+                    showImageCard(currentLetter);
+                }, 800);
 
                 setTimeout(() => {
                     allButtons.forEach(btn => {
                         btn.disabled = false;
                         btn.classList.remove('wrong');
-                        btn.style.background = '#4CAF50';
+                        btn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%)';
                         btn.style.transform = 'scale(1)';
                     });
-                }, 2000);
+                    hideImageCard();
+                }, 3000);
             }
 
             updateScore();
@@ -457,7 +806,8 @@
                 return;
             }
 
-            // Останавливаем любую озвучку перед началом нового вопроса
+            clearInterval(timer);
+            hideImageCard();
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
@@ -465,23 +815,22 @@
             questionsAsked++;
             currentLetter = getRandomLetter();
             
-            // Рисуем знак вопроса на canvas
             drawLetter('?');
-            
             document.getElementById('pronunciation-text').textContent = '[ ? ]';
             
-            const wrongOptions = getWrongOptions(currentLetter, 3);
+            const numOptions = currentLevel === 'easy' ? 4 : currentLevel === 'medium' ? 6 : 8;
+            const wrongOptions = getWrongOptions(currentLetter, numOptions - 1);
             const allOptions = shuffle([currentLetter, ...wrongOptions]);
             
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
+            optionsContainer.style.gridTemplateColumns = currentLevel === 'hard' ? 'repeat(4, 1fr)' : '1fr 1fr';
             
             allOptions.forEach(letter => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerHTML = `${letter} <span style="font-size: 0.6em; opacity: 0.8;">(${letter.toLowerCase()})</span>`;
                 btn.setAttribute('aria-label', `Буква ${letter}`);
-                btn.setAttribute('role', 'button');
                 btn.onclick = function() { checkAnswer(letter, btn); };
                 optionsContainer.appendChild(btn);
             });
@@ -489,45 +838,70 @@
             setTimeout(() => {
                 speakLetter();
                 updatePronunciation();
+                startTimer();
             }, 300);
 
             updateScore();
         }
 
         function showFinalScore() {
+            clearInterval(timer);
             const container = document.querySelector('.game-container');
             const percentage = Math.round((correctAnswers / totalQuestions) * 100);
             let emoji = '🎉';
             let message = 'Отлично!';
+            let stars = '⭐';
             
             if (percentage === 100) {
                 emoji = '🏆';
-                message = 'Идеально!';
+                message = 'ИДЕАЛЬНО!';
+                stars = '⭐⭐⭐';
             } else if (percentage >= 80) {
                 emoji = '🌟';
-                message = 'Супер!';
+                message = 'СУПЕР!';
+                stars = '⭐⭐';
             } else if (percentage >= 60) {
                 emoji = '👍';
                 message = 'Хорошо!';
+                stars = '⭐';
             } else {
                 emoji = '💪';
-                message = 'Продолжай тренироваться!';
+                message = 'Продолжай!';
+                stars = '⭐';
             }
 
             container.innerHTML = `
-                <h1>${emoji} ${message}</h1>
-                <div style="font-size: 3em; margin: 30px 0;">${percentage}%</div>
+                <h1 style="font-size: 3em;">${emoji}</h1>
+                <h2 style="color: #667eea; margin: 20px 0;">${message}</h2>
+                <div style="font-size: 4em; margin: 20px 0;">${stars}</div>
+                <div style="font-size: 5em; margin: 30px 0; color: #4CAF50; font-weight: bold;">${percentage}%</div>
                 <div style="font-size: 1.5em; margin: 20px 0;">
-                    <div style="margin: 10px 0;">✅ Правильных ответов: ${correctAnswers}</div>
-                    <div style="margin: 10px 0;">❌ Ошибок: ${wrongAnswers}</div>
+                    <div style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, #4CAF50, #8BC34A); color: white; border-radius: 15px;">
+                        ✅ Правильных ответов: <strong>${correctAnswers}</strong>
+                    </div>
+                    <div style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 15px;">
+                        💯 Лучшее комбо: <strong>${Math.max(...Array(questionsAsked).keys()).filter((_, i) => i < comboCount).length}</strong>
+                    </div>
+                    <div style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, #f44336, #e91e63); color: white; border-radius: 15px;">
+                        ❌ Ошибок: <strong>${wrongAnswers}</strong>
+                    </div>
                 </div>
-                <button class="control-btn" onclick="location.reload()" style="margin-top: 30px; font-size: 1.3em;">
+                <button class="control-btn" onclick="location.reload()" style="margin-top: 30px; font-size: 1.5em; padding: 20px 40px;">
                     🔄 Играть ещё раз
                 </button>
             `;
         }
 
-        // Start the game
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionsAsked = 0;
+            comboCount = 0;
+            clearInterval(timer);
+            nextQuestion();
+        }
+
+        // Старт игры
         window.onload = function() {
             nextQuestion();
         };

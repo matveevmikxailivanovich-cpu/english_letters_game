@@ -85,25 +85,19 @@
 
         .letter-display {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 8em;
-            font-weight: bold;
-            padding: 50px;
             border-radius: 25px;
             margin: 30px 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer;
             transition: transform 0.3s;
-            text-transform: uppercase;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
         }
         
-        .letter-display::before {
-            content: attr(data-letter);
-            speak: never;
-            -webkit-user-select: none;
+        #letter-canvas {
+            cursor: pointer;
         }
 
         .pronunciation {
@@ -258,7 +252,8 @@
             <div class="progress-fill" id="progress"></div>
         </div>
 
-        <div class="letter-display" id="letter-display" onclick="speakLetter()" data-letter="?" aria-hidden="true" role="img" aria-label="">
+        <div class="letter-display" onclick="speakLetter()">
+            <canvas id="letter-canvas" width="400" height="250" aria-hidden="true" role="img"></canvas>
         </div>
 
         <div class="pronunciation">
@@ -285,6 +280,24 @@
         let wrongAnswers = 0;
         let questionsAsked = 0;
         const totalQuestions = 10;
+
+        // Функция для отрисовки буквы на canvas (iOS не может прочитать изображение)
+        function drawLetter(letter) {
+            const canvas = document.getElementById('letter-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Очищаем canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Настройки текста
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 180px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Рисуем букву
+            ctx.fillText(letter, canvas.width / 2, canvas.height / 2);
+        }
 
         // Словарь произношения букв
         const letterPronunciation = {
@@ -452,9 +465,8 @@
             questionsAsked++;
             currentLetter = getRandomLetter();
             
-            const letterDisplay = document.getElementById('letter-display');
-            letterDisplay.setAttribute('data-letter', '?');
-            letterDisplay.setAttribute('aria-label', '');
+            // Рисуем знак вопроса на canvas
+            drawLetter('?');
             
             document.getElementById('pronunciation-text').textContent = '[ ? ]';
             

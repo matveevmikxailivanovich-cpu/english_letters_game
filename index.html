@@ -11,6 +11,24 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Запрет на чтение контента в iOS */
+        body, body * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Специально для iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            * {
+                speak: never;
+                -webkit-user-select: none !important;
+            }
         }
 
         body {
@@ -77,6 +95,15 @@
             cursor: pointer;
             transition: transform 0.3s;
             text-transform: uppercase;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        
+        .letter-display::before {
+            content: attr(data-letter);
+            speak: never;
+            -webkit-user-select: none;
         }
 
         .pronunciation {
@@ -231,8 +258,7 @@
             <div class="progress-fill" id="progress"></div>
         </div>
 
-        <div class="letter-display" id="letter-display" onclick="speakLetter()" title="Нажми, чтобы услышать букву снова!" aria-hidden="true" role="presentation">
-            ?
+        <div class="letter-display" id="letter-display" onclick="speakLetter()" data-letter="?" aria-hidden="true" role="img" aria-label="">
         </div>
 
         <div class="pronunciation">
@@ -427,7 +453,7 @@
             currentLetter = getRandomLetter();
             
             const letterDisplay = document.getElementById('letter-display');
-            letterDisplay.textContent = '?';
+            letterDisplay.setAttribute('data-letter', '?');
             letterDisplay.setAttribute('aria-label', '');
             
             document.getElementById('pronunciation-text').textContent = '[ ? ]';
@@ -443,6 +469,7 @@
                 btn.className = 'option-btn';
                 btn.innerHTML = `${letter} <span style="font-size: 0.6em; opacity: 0.8;">(${letter.toLowerCase()})</span>`;
                 btn.setAttribute('aria-label', `Буква ${letter}`);
+                btn.setAttribute('role', 'button');
                 btn.onclick = function() { checkAnswer(letter, btn); };
                 optionsContainer.appendChild(btn);
             });

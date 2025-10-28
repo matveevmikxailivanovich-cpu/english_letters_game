@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Учим английские буквы!</title>
     <style>
         * {
@@ -211,7 +213,7 @@
         }
     </style>
 </head>
-<body>
+<body aria-live="off">{
     <div class="game-container">
         <h1>🎮 Учим английские буквы!</h1>
         <p class="subtitle">Слушай букву и выбирай правильный ответ</p>
@@ -229,7 +231,7 @@
             <div class="progress-fill" id="progress"></div>
         </div>
 
-        <div class="letter-display" id="letter-display" onclick="speakLetter()" title="Нажми, чтобы услышать букву снова!">
+        <div class="letter-display" id="letter-display" onclick="speakLetter()" title="Нажми, чтобы услышать букву снова!" aria-hidden="true" role="presentation">
             ?
         </div>
 
@@ -323,13 +325,27 @@
 
         function speakLetter() {
             if ('speechSynthesis' in window) {
+                // Останавливаем любую текущую озвучку
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(currentLetter);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.8;
-                utterance.pitch = 1.2;
-                utterance.volume = 1;
-                window.speechSynthesis.speak(utterance);
+                
+                // Небольшая задержка для iOS Safari
+                setTimeout(() => {
+                    const utterance = new SpeechSynthesisUtterance(currentLetter);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.8;
+                    utterance.pitch = 1.2;
+                    utterance.volume = 1;
+                    
+                    // Предотвращаем повторное озвучивание
+                    utterance.onstart = function() {
+                        document.body.setAttribute('aria-busy', 'true');
+                    };
+                    utterance.onend = function() {
+                        document.body.setAttribute('aria-busy', 'false');
+                    };
+                    
+                    window.speechSynthesis.speak(utterance);
+                }, 100);
             }
         }
 
@@ -402,10 +418,18 @@
                 return;
             }
 
+            // Останавливаем любую озвучку перед началом нового вопроса
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
             questionsAsked++;
             currentLetter = getRandomLetter();
             
-            document.getElementById('letter-display').textContent = '?';
+            const letterDisplay = document.getElementById('letter-display');
+            letterDisplay.textContent = '?';
+            letterDisplay.setAttribute('aria-label', '');
+            
             document.getElementById('pronunciation-text').textContent = '[ ? ]';
             
             const wrongOptions = getWrongOptions(currentLetter, 3);
@@ -418,6 +442,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerHTML = `${letter} <span style="font-size: 0.6em; opacity: 0.8;">(${letter.toLowerCase()})</span>`;
+                btn.setAttribute('aria-label', `Буква ${letter}`);
                 btn.onclick = function() { checkAnswer(letter, btn); };
                 optionsContainer.appendChild(btn);
             });
